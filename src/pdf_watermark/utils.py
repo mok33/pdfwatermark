@@ -7,7 +7,19 @@ from pdf2image import convert_from_path
 from pdf2image.exceptions import PopplerNotInstalledError
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
-
+from svglib.svglib import svg2rlg
+from reportlab.graphics import renderPDF, renderSVG
+def scale(drawing, scaling_factor):
+    """
+    Scale a reportlab.graphics.shapes.Drawing()
+    object while maintaining the aspect ratio
+    """
+    scaling_x, scaling_y = scaling_factor
+    
+    drawing.width = drawing.minWidth() * scaling_x
+    drawing.height = drawing.height * scaling_y
+    drawing.scale(scaling_x, scaling_y)
+    return drawing
 
 def draw_centered_image(
     canvas: canvas.Canvas,
@@ -15,18 +27,22 @@ def draw_centered_image(
     y: float,
     width: float,
     height: float,
-    image: ImageReader,
+    image_scale: list,
+    svg: str,
 ):
     bottom_left_x = x - width / 2
     bottom_left_y = y - height / 2
-    canvas.drawImage(
-        image,
-        bottom_left_x,
-        bottom_left_y,
-        width=width,
-        height=height,
-        mask="auto",
-    )
+    # canvas.drawImage(
+    #     image,
+    #     bottom_left_x,
+    #     bottom_left_y,
+    #     width=width,
+    #     height=height,
+    #     mask="auto",
+    # )
+    drawing = svg2rlg(svg)
+    scaled_drawing = scale(drawing, scaling_factor=image_scale)
+    renderPDF.draw(scaled_drawing, canvas, bottom_left_x, bottom_left_y)
 
 
 def draw_centered_string_with_line_breaks(

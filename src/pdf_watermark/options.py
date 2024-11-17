@@ -4,6 +4,7 @@ from typing import List, Union
 
 from reportlab.lib.colors import HexColor
 from reportlab.lib.utils import ImageReader
+from svglib.svglib import svg2rlg
 
 
 class DrawingOptions:
@@ -28,6 +29,10 @@ class DrawingOptions:
             (".png", ".jpg", ".jpeg", ".PNG", ".JPG", ".JPEG")
         ) and os.path.isfile(potential_image_path):
             self.image = ImageReader(watermark)
+        elif watermark.endswith(
+            (".svg", ".SVG")
+        ) and os.path.isfile(potential_image_path):
+            self.image = svg2rlg(potential_image_path)
         else:
             self.text = watermark
 
@@ -134,6 +139,7 @@ class InsertOptions:
         y: float,
         x: float,
         horizontal_alignment: List[Alignments],
+        svg: str
     ) -> None:
         if not Alignments.has_value(horizontal_alignment):
             raise Exception(
@@ -142,3 +148,4 @@ class InsertOptions:
         self.y = y
         self.x = x
         self.horizontal_alignment = horizontal_alignment
+        self.svg = svg

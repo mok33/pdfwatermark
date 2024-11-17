@@ -4,8 +4,8 @@ from typing import Union
 import numpy as np
 from reportlab.pdfgen import canvas
 
-from pdf_watermark.options import Alignments, DrawingOptions, GridOptions, InsertOptions
-from pdf_watermark.utils import (
+from .options import Alignments, DrawingOptions, GridOptions, InsertOptions
+from .utils import (
     change_base,
     draw_centered_image,
     draw_centered_string_with_line_breaks,
@@ -21,6 +21,7 @@ def draw_one_watermark(
     drawing_options: DrawingOptions,
     image_width: float,
     image_height: float,
+    svg: str
 ):
     x_prime, y_prime = change_base(x, y, rotation_matrix)
 
@@ -39,7 +40,8 @@ def draw_one_watermark(
             y_prime,
             image_width,
             image_height,
-            drawing_options.image,
+            drawing_options.image_scale,
+            svg,
         )
 
 
@@ -85,7 +87,7 @@ def draw_insert_watermark(
             image_height,
             max_image_width,
             max_image_height,
-            drawing_options.image_scale,
+            drawing_options.image_scale[0],
         )
 
         watermark_width = image_width
@@ -115,6 +117,7 @@ def draw_insert_watermark(
         drawing_options,
         image_width,
         image_height,
+        specific_options.svg,
     )
 
 
@@ -185,7 +188,7 @@ def draw_watermarks(
         ]
     )
 
-    watermark.setFillColor(drawing_options.text_color, alpha=drawing_options.opacity)
+    # watermark.setFillColor(drawing_options.text_color, alpha=drawing_options.opacity)
     watermark.setFont(drawing_options.text_font, drawing_options.text_size)
     watermark.rotate(drawing_options.angle)
 

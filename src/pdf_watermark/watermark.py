@@ -2,8 +2,8 @@ from functools import wraps
 
 import click
 
-from pdf_watermark.handler import add_watermark_from_options
-from pdf_watermark.options import (
+from .handler import add_watermark_from_options
+from .options import (
     DrawingOptions,
     FilesOptions,
     GridOptions,
